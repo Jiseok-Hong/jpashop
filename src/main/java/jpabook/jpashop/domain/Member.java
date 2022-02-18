@@ -22,6 +22,7 @@ public class Member{
     @Embedded
     private Address address;
 
+    @OneToMany(mappedBy = "member")
     private List<Orders> orders = new ArrayList<>();
 
 
