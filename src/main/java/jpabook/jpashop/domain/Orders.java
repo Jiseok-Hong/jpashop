@@ -50,4 +50,37 @@ public class Orders {
         this.delivery = delivery;
         delivery.setOrders(this);
     }
+
+    //generate new order method
+    public static Orders createOrder(Member member, Delivery delivery, OrderItems... orderItems) {
+        Orders order = new Orders();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItems orderItem : orderItems) {
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    //business logic
+    //CANCEL Order
+    public void cancel() {
+        if (delivery.getDeliveryStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("Cannot cancel the order has already arrived.");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItems orderItems : this.orderItems) {
+            orderItems.cancel();
+        }
+    }
+
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItems orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
+    }
 }
