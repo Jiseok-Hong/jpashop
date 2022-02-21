@@ -1,7 +1,9 @@
 package jpabook.jpashop.domain;
 
 import jpabook.jpashop.domain.item.Item;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.criterion.Order;
 
@@ -10,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItems {
 
     @Id
@@ -28,6 +31,8 @@ public class OrderItems {
     private int orderPrice;
 
     private int count;
+
+    //protected OrderItems() { }
 
     //constructor
     public static OrderItems createOrderItems(Item item, int orderPrice, int count) {

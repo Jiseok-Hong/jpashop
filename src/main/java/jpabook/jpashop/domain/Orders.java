@@ -1,6 +1,8 @@
 package jpabook.jpashop.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.criterion.Order;
 
@@ -14,6 +16,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Orders {
 
     @Id @GeneratedValue
@@ -24,10 +27,10 @@ public class Orders {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItems> orderItems = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
@@ -51,7 +54,7 @@ public class Orders {
         delivery.setOrders(this);
     }
 
-    //generate new order method
+    //constructor
     public static Orders createOrder(Member member, Delivery delivery, OrderItems... orderItems) {
         Orders order = new Orders();
         order.setMember(member);
@@ -64,7 +67,7 @@ public class Orders {
         return order;
     }
 
-    //business logic
+    //Business logic
     //CANCEL Order
     public void cancel() {
         if (delivery.getDeliveryStatus() == DeliveryStatus.COMP) {
@@ -78,7 +81,7 @@ public class Orders {
 
     public int getTotalPrice() {
         int totalPrice = 0;
-        for (OrderItems orderItem : orderItems) {
+        for (OrderItems orderItem : this.orderItems) {
             totalPrice += orderItem.getTotalPrice();
         }
         return totalPrice;
