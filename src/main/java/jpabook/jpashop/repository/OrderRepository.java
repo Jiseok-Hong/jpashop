@@ -23,6 +23,8 @@ public class OrderRepository {
     }
 
 //    public List<Orders> findAll(OrderSearch orderSearch) {
-//
+//        em.createQuery("select o from Orders o join o.member m" +
+//                " where o.status = :status" +
+//                " and m.name like :name", Orders.class).getResultList();
 //    }
 }
