@@ -1,14 +1,17 @@
 package jpabook.jpashop.repository;
 
+
+import jpabook.jpashop.domain.Address;
+import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.domain.Orders;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Order;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -29,7 +32,7 @@ public class OrderRepository {
         //language=JPAQL
         String jpql = "select o From Orders o join o.member m";
         boolean isFirstCondition = true;
-        //주문 상태 검색
+        //Order Status
         if (orderSearch.getOrderStatus() != null) {
             if (isFirstCondition) {
                 jpql += " where";
@@ -39,7 +42,7 @@ public class OrderRepository {
             }
             jpql += " o.status = :status";
         }
-        //회원 이름 검색
+        //UserName
         if (StringUtils.hasText(orderSearch.getMemberName())) {
             if (isFirstCondition) {
                 jpql += " where";
@@ -58,5 +61,17 @@ public class OrderRepository {
             query = query.setParameter("name", orderSearch.getMemberName());
         }
         return query.getResultList();
+    }
+
+    public List<OrdersDto> findOrderDto() {
+        return em.createQuery("select new jpabook.jpashop.repository.OrdersDto(o.id, m.name, o.orderDate, o.status, d.address) from Orders o" +
+                                " join o.member m" +
+                                " join o.delivery d", OrdersDto.class).getResultList();
+    }
+
+    public List<Orders> findOrder() {
+        return em.createQuery("select o from Orders o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d", Orders.class).getResultList();
     }
 }

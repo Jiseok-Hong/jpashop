@@ -18,6 +18,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+
 //    @Autowired
 //    public MemberService(MemberRepository memberRepository) {
 //        this.memberRepository = memberRepository;
@@ -47,5 +48,11 @@ public class MemberService {
 
     public Member findOne(Long memberId) {
         return memberRepository.findOne(memberId);
+    }
+
+    @Transactional
+    public void update(Long id, String name){
+        Member findMember = memberRepository.findOne(id);
+        findMember.setName(name);
     }
 }
