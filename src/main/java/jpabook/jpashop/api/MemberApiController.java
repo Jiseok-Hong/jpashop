@@ -76,12 +76,8 @@ public class MemberApiController {
     @Data
     @AllArgsConstructor
     static class UpdateMemberResponse {
-
         private Long id;
         private String name;
-        public UpdateMemberResponse(Long id) {
-            this.id = id;
-        }
     }
 
     @Data

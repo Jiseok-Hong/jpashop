@@ -2,6 +2,7 @@ package jpabook.jpashop.repository;
 
 
 import jpabook.jpashop.domain.Address;
+import jpabook.jpashop.domain.OrderItems;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.domain.Orders;
 import lombok.Data;
@@ -13,6 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Repository
 @RequiredArgsConstructor
@@ -73,5 +76,23 @@ public class OrderRepository {
         return em.createQuery("select o from Orders o" +
                                 " join fetch o.member m" +
                                 " join fetch o.delivery d", Orders.class).getResultList();
+    }
+
+    public List<Orders> findOrderAll() {
+        return em.createQuery("select distinct o from Orders o " +
+                                "join fetch o.member m " +
+                                "join fetch o.delivery d " +
+                                "join fetch o.orderItems oi " +
+                                "join fetch oi.item i", Orders.class).getResultList();
+    }
+
+
+    public List<Orders> findOrderAllPaging(int offset, int limit) {
+        return em.createQuery("select o from Orders o" +
+                " join fetch o.member m" +
+                " join fetch o.delivery d", Orders.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 }
